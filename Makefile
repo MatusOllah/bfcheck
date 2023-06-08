@@ -2,7 +2,7 @@ GO = go
 
 BINARY = ./bin
 
-FLAGS = -gcflags="-dwarf=false"
+FLAGS = -gcflags="-dwarf=false -v"
 
 GOOS = $(shell $(GO) env GOOS)
 GOARCH = $(shell $(GO) env GOARCH)
