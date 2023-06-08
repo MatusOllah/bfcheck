@@ -1,4 +1,4 @@
-module bfcheck
+module github.com/MatusOllah/bfcheck
 
 go 1.20
 
