@@ -78,10 +78,10 @@ func checkDir(pathToFNF string) (*Report, error) {
 func checkFile(path string) ([]Instance, error) {
 	if cfg.Verbose {
 		if cfg.Color {
-			color.New(color.FgCyan).Printf("\tchecking ")
+			color.New(color.FgCyan).Printf("checking ")
 			fmt.Println(path)
 		} else {
-			fmt.Printf("\tchecking %s\n", path)
+			fmt.Printf("checking %s\n", path)
 		}
 	}
 
