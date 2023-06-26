@@ -13,11 +13,12 @@ import (
 const version = "1.0.0"
 
 type Config struct {
-	Verbose   bool   `short:"v" long:"verbose" description:"Show verbose debug information"`
-	Path      string `short:"p" long:"path" description:"Path to FNF mod" default:"."`
-	Color     bool   `short:"c" long:"color" description:"Color output"`
-	ShowLines bool   `short:"l" long:"show-lines" description:"Show lines when printing found instances"`
-	Version   bool   `long:"version" description:"Print version and exit"`
+	Verbose     bool   `short:"v" long:"verbose" description:"Show verbose debug information"`
+	Path        string `short:"p" long:"path" description:"Path to FNF mod" default:"."`
+	Color       bool   `short:"c" long:"color" description:"Color output"`
+	ShowLines   bool   `short:"l" long:"show-lines" description:"Show lines when printing found instances"`
+	WriteReport bool   `short:"r" long:"write-report" description:"Write a report in JSON format"`
+	Version     bool   `long:"version" description:"Print version and exit"`
 }
 
 var cfg Config
