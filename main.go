@@ -44,24 +44,65 @@ func main() {
 		os.Exit(0)
 	}
 
-	num, err := checkDir(cfg.Path)
+	r, err := checkDir(cfg.Path)
 	if err != nil {
 		tracerr.Print(err)
 		os.Exit(1)
 	}
 
-	if num != 0 {
+	if r.NumInstances != 0 {
 		if cfg.Color {
 			color.New(color.Bold).Printf("instances: ")
-			fmt.Println(num)
+			fmt.Println(r.NumInstances)
 		} else {
-			fmt.Printf("instances: %d\n", num)
+			fmt.Printf("instances: %d\n", r.NumInstances)
 		}
-	} else if num == 0 {
+	} else if r.NumInstances == 0 {
 		if cfg.Color {
 			color.Green("ALL OK")
 		} else {
 			fmt.Println("ALL OK")
 		}
+	}
+
+	if cfg.WriteReport {
+		path := fmt.Sprintf("bfcheck_report_%d.json", r.Time)
+
+		if cfg.Verbose {
+			if cfg.Color {
+				color.New(color.FgCyan).Printf("Writing report to ")
+				fmt.Println(path)
+			} else {
+				fmt.Printf("Writing report to %s\n", path)
+			}
+		}
+
+		b, err := r.Encode()
+		if err != nil {
+			tracerr.Print(err)
+			os.Exit(1)
+		}
+
+		f, err := os.Create(path)
+		if err != nil {
+			tracerr.Print(err)
+			os.Exit(1)
+		}
+
+		written, err := f.Write(b)
+		if err != nil {
+			tracerr.Print(err)
+			os.Exit(1)
+		}
+
+		if cfg.Verbose {
+			if cfg.Color {
+				color.New(color.FgGreen, color.Bold).Printf("Wrote %d bytes\n", written)
+			} else {
+				fmt.Printf("Wrote %d bytes\n", written)
+			}
+		}
+
+		f.Close()
 	}
 }
