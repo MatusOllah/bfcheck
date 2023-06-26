@@ -14,9 +14,10 @@ type Report struct {
 }
 
 type Instance struct {
-	File   string `json:"file"`
-	Line   int    `json:"line"`
-	Column int    `json:"column"`
+	File        string `json:"file"`
+	Line        int    `json:"line"`
+	Column      int    `json:"column"`
+	FoundString string `json:"foundString"`
 }
 
 func (r *Report) Encode() ([]byte, error) {
