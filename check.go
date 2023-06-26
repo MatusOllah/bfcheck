@@ -89,17 +89,19 @@ func checkFile(path string) (int, error) {
 	for col := 1; sc.Scan(); col++ {
 		for _, pattern := range blacklist {
 			if strings.Contains(strings.ToLower(sc.Text()), strings.ToLower(pattern)) {
+				pos := strings.Index(strings.ToLower(sc.Text()), strings.ToLower(pattern))
+
 				fmt.Println()
 				if cfg.Color {
-					color.New(color.Bold).Printf("%s:%d:%d: found \"%s\"\n", path, col, strings.Index(strings.ToLower(sc.Text()), strings.ToLower(pattern))+1, pattern)
+					color.New(color.Bold).Printf("%s:%d:%d: found \"%s\"\n", path, col, pos+1, pattern)
 				} else {
-					fmt.Printf("%s:%d:%d: found \"%s\"\n", path, col, strings.Index(strings.ToLower(sc.Text()), strings.ToLower(pattern))+1, pattern)
+					fmt.Printf("%s:%d:%d: found \"%s\"\n", path, col, pos+1, pattern)
 				}
 
 				if cfg.ShowLines {
 					fmt.Printf("\t%s\n", sc.Text())
 
-					printArrows(len(sc.Text())+(strings.Index(strings.ToLower(sc.Text()), strings.ToLower(pattern))-len(sc.Text())), len(pattern))
+					printArrows(len(sc.Text())+(pos-len(sc.Text())), len(pattern))
 
 				}
 
