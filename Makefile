@@ -8,7 +8,7 @@ GOOS = $(shell $(GO) env GOOS)
 GOARCH = $(shell $(GO) env GOARCH)
 
 .PHONY: all
-all: test build
+all: build
 
 .PHONY: build
 build: clean
@@ -21,7 +21,7 @@ test:
 	GO111MODULE=on $(GO) test -v
 
 .PHONY: install
-install: test
+install:
 	$(GO) install
 
 .PHONY: clean
