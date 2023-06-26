@@ -36,6 +36,7 @@ func checkDir(pathToFNF string) (int, error) {
 				filepath.Ext(path) != ".json" &&
 				filepath.Ext(path) != ".toml" &&
 				filepath.Ext(path) != ".yaml" &&
+				filepath.Ext(path) != ".xml" &&
 				filepath.Ext(path) != ".yml" &&
 				filepath.Ext(path) != ".hscript" &&
 				filepath.Ext(path) != ".lua" &&
