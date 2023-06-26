@@ -14,12 +14,12 @@ func TestAntiBF(t *testing.T) {
 		ShowLines: false,
 	}
 
-	num, err := checkDir(cfg.Path)
+	r, err := checkDir(cfg.Path)
 	if err != nil {
 		t.Errorf("%v", err)
 	}
 
-	assert.Equal(t, 4, num)
+	assert.Equal(t, 4, r.NumInstances)
 }
 
 func TestNotAntiBF(t *testing.T) {
@@ -30,10 +30,10 @@ func TestNotAntiBF(t *testing.T) {
 		ShowLines: false,
 	}
 
-	num, err := checkDir(cfg.Path)
+	r, err := checkDir(cfg.Path)
 	if err != nil {
 		t.Errorf("%v", err)
 	}
 
-	assert.Equal(t, 0, num)
+	assert.Equal(t, 0, r.NumInstances)
 }
