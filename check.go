@@ -23,13 +23,18 @@ func checkDir(pathToFNF string) (*Report, error) {
 		}
 	}
 
+	absPath, err := filepath.Abs(pathToFNF)
+	if err != nil {
+		return nil, tracerr.Wrap(err)
+	}
+
 	r := &Report{
 		Time:      time.Now().UnixNano(),
-		Path:      pathToFNF,
+		Path:      absPath,
 		Instances: []Instance{},
 	}
 
-	err := filepath.Walk(filepath.Join(pathToFNF, "assets"), func(path string, info fs.FileInfo, err error) error {
+	err = filepath.Walk(filepath.Join(pathToFNF, "assets"), func(path string, info fs.FileInfo, err error) error {
 		if err != nil {
 			return tracerr.Wrap(err)
 		}
@@ -114,8 +119,13 @@ func checkFile(path string) ([]Instance, error) {
 
 				fmt.Println()
 
+				absPath, err := filepath.Abs(path)
+				if err != nil {
+					return nil, tracerr.Wrap(err)
+				}
+
 				instances = append(instances, Instance{
-					File:   path,
+					File:   absPath,
 					Line:   ln,
 					Column: col,
 				})
