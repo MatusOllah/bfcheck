@@ -10,7 +10,7 @@ import (
 	"github.com/ztrue/tracerr"
 )
 
-const version = "1.0.0"
+const version = "1.1.0"
 
 type Config struct {
 	Verbose     bool   `short:"v" long:"verbose" description:"Show verbose debug information"`
