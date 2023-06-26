@@ -20,6 +20,10 @@ build: clean
 test:
 	GO111MODULE=on $(GO) test -v
 
+.PHONY: install
+install: test
+	$(GO) install
+
 .PHONY: clean
 clean:
 	rm -rf $(BINARY)/$(GOOS)-$(GOARCH)
