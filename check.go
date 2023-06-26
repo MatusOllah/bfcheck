@@ -7,12 +7,13 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/fatih/color"
 	"github.com/ztrue/tracerr"
 )
 
-func checkDir(pathToFNF string) (int, error) {
+func checkDir(pathToFNF string) (*Report, error) {
 	if cfg.Verbose {
 		if cfg.Color {
 			color.New(color.FgCyan).Printf("checking ")
@@ -22,7 +23,11 @@ func checkDir(pathToFNF string) (int, error) {
 		}
 	}
 
-	num := 0
+	r := &Report{
+		Time:      time.Now().UnixNano(),
+		Path:      pathToFNF,
+		Instances: []Instance{},
+	}
 
 	err := filepath.Walk(filepath.Join(pathToFNF, "assets"), func(path string, info fs.FileInfo, err error) error {
 		if err != nil {
@@ -51,24 +56,26 @@ func checkDir(pathToFNF string) (int, error) {
 				return nil
 			}
 
-			fileNum, err := checkFile(path)
+			fileInstances, err := checkFile(path)
 			if err != nil {
 				return tracerr.Wrap(err)
 			}
 
-			num += fileNum
+			r.Instances = append(r.Instances, fileInstances...)
 		}
 
 		return nil
 	})
 	if err != nil {
-		return 0, tracerr.Wrap(err)
+		return nil, tracerr.Wrap(err)
 	}
 
-	return num, nil
+	r.NumInstances = len(r.Instances)
+
+	return r, nil
 }
 
-func checkFile(path string) (int, error) {
+func checkFile(path string) ([]Instance, error) {
 	if cfg.Verbose {
 		if cfg.Color {
 			color.New(color.FgCyan).Printf("\tchecking ")
@@ -78,41 +85,45 @@ func checkFile(path string) (int, error) {
 		}
 	}
 
-	num := 0
+	instances := []Instance{}
 
 	file, err := os.Open(path)
 	if err != nil {
-		return 0, tracerr.Wrap(err)
+		return nil, tracerr.Wrap(err)
 	}
 
 	sc := bufio.NewScanner(file)
-	for col := 1; sc.Scan(); col++ {
+	for ln := 1; sc.Scan(); ln++ {
 		for _, pattern := range blacklist {
 			if strings.Contains(strings.ToLower(sc.Text()), strings.ToLower(pattern)) {
-				pos := strings.Index(strings.ToLower(sc.Text()), strings.ToLower(pattern))
+				col := strings.Index(strings.ToLower(sc.Text()), strings.ToLower(pattern))
 
 				fmt.Println()
 				if cfg.Color {
-					color.New(color.Bold).Printf("%s:%d:%d: found \"%s\"\n", path, col, pos+1, pattern)
+					color.New(color.Bold).Printf("%s:%d:%d: found \"%s\"\n", path, ln, col+1, pattern)
 				} else {
-					fmt.Printf("%s:%d:%d: found \"%s\"\n", path, col, pos+1, pattern)
+					fmt.Printf("%s:%d:%d: found \"%s\"\n", path, ln, col+1, pattern)
 				}
 
 				if cfg.ShowLines {
 					fmt.Printf("\t%s\n", sc.Text())
 
-					printArrows(len(sc.Text())+(pos-len(sc.Text())), len(pattern))
+					printArrows(len(sc.Text())+(col-len(sc.Text())), len(pattern))
 
 				}
 
 				fmt.Println()
 
-				num++
+				instances = append(instances, Instance{
+					File:   path,
+					Line:   ln,
+					Column: col,
+				})
 			}
 		}
 	}
 
-	return num, nil
+	return instances, nil
 }
 
 func printArrows(index, length int) {
