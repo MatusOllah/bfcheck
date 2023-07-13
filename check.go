@@ -34,7 +34,7 @@ func checkDir(pathToFNF string) (*Report, error) {
 		Instances: []Instance{},
 	}
 
-	err = filepath.Walk(filepath.Join(pathToFNF, "assets"), func(path string, info fs.FileInfo, err error) error {
+	err = filepath.Walk(pathToFNF, func(path string, info fs.FileInfo, err error) error {
 		if err != nil {
 			return tracerr.Wrap(err)
 		}
