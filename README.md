@@ -25,7 +25,7 @@ An Anti-BF FNF mod is a mod where the opponent calls Boyfriend a midget or kills
 To check / scan a FNF mod run:
 
 ```shell
-bfcheck -p path/to/fnf/mod
+bfcheck path/to/fnf/mod
 ```
 
 ### Useful flags
