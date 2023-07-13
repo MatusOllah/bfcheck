@@ -38,4 +38,6 @@ bfcheck -p path/to/fnf/mod
 
 - ``-l`` - shows found lines
 
+- ``-r`` - generates report
+
 - ``--version`` - prints version and exits
