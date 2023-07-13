@@ -8,13 +8,17 @@ import (
 
 func TestAntiBF(t *testing.T) {
 	cfg = Config{
+		PosArgs: struct {
+			Path string `description:"Path to FNF mod" default:"."`
+		}{
+			Path: "./testdata/AntiBF",
+		},
 		Verbose:   false,
-		Path:      "./testdata/AntiBF",
 		Color:     false,
 		ShowLines: false,
 	}
 
-	r, err := checkDir(cfg.Path)
+	r, err := checkDir(cfg.PosArgs.Path)
 	if err != nil {
 		t.Errorf("%v", err)
 	}
@@ -24,13 +28,17 @@ func TestAntiBF(t *testing.T) {
 
 func TestNotAntiBF(t *testing.T) {
 	cfg = Config{
+		PosArgs: struct {
+			Path string `description:"Path to FNF mod" default:"."`
+		}{
+			Path: "./testdata/NotAntiBF",
+		},
 		Verbose:   false,
-		Path:      "./testdata/NotAntiBF",
 		Color:     false,
 		ShowLines: false,
 	}
 
-	r, err := checkDir(cfg.Path)
+	r, err := checkDir(cfg.PosArgs.Path)
 	if err != nil {
 		t.Errorf("%v", err)
 	}

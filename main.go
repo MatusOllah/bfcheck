@@ -13,12 +13,15 @@ import (
 const version = "1.1.0"
 
 type Config struct {
-	Verbose     bool   `short:"v" long:"verbose" description:"Show verbose debug information"`
-	Path        string `short:"p" long:"path" description:"Path to FNF mod" default:"."`
-	Color       bool   `short:"c" long:"color" description:"Color output"`
-	ShowLines   bool   `short:"l" long:"show-lines" description:"Show lines when printing found instances"`
-	WriteReport bool   `short:"r" long:"write-report" description:"Write a report in JSON format"`
-	Version     bool   `long:"version" description:"Print version and exit"`
+	PosArgs struct {
+		Path string `description:"Path to FNF mod" default:"."`
+	} `positional-args:"yes" required:"yes"`
+	Verbose bool `short:"v" long:"verbose" description:"Show verbose debug information"`
+	//Path        string `short:"p" long:"path" description:"Path to FNF mod" default:"."`
+	Color       bool `short:"c" long:"color" description:"Color output"`
+	ShowLines   bool `short:"l" long:"show-lines" description:"Show lines when printing found instances"`
+	WriteReport bool `short:"r" long:"write-report" description:"Write a report in JSON format"`
+	Version     bool `long:"version" description:"Print version and exit"`
 }
 
 var cfg Config
@@ -44,7 +47,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	r, err := checkDir(cfg.Path)
+	r, err := checkDir(cfg.PosArgs.Path)
 	if err != nil {
 		tracerr.Print(err)
 		os.Exit(1)
