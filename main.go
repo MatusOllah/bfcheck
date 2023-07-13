@@ -4,9 +4,12 @@ import (
 	"fmt"
 	"os"
 	"runtime"
+	"time"
 
 	"github.com/fatih/color"
 	"github.com/jessevdk/go-flags"
+	"github.com/theckman/yacspin"
+	"github.com/tidwall/pretty"
 	"github.com/ztrue/tracerr"
 )
 
@@ -79,39 +82,52 @@ func main() {
 func WriteReport(r *Report) error {
 	path := fmt.Sprintf("bfcheck_report_%d.json", r.Time)
 
-	if cfg.Verbose {
-		if cfg.Color {
-			color.New(color.FgCyan).Printf("Writing report to ")
-			fmt.Println(path)
-		} else {
-			fmt.Printf("Writing report to %s\n", path)
-		}
+	spin, err := yacspin.New(yacspin.Config{
+		Frequency:       100 * time.Millisecond,
+		CharSet:         yacspin.CharSets[9],
+		Suffix:          " creating report",
+		SuffixAutoColon: true,
+		Message:         "",
+		StopCharacter:   "✓",
+		StopColors:      []string{"fgGreen"},
+	})
+	if err != nil {
+		return tracerr.Wrap(err)
 	}
 
+	if err = spin.Start(); err != nil {
+		return tracerr.Wrap(err)
+	}
+
+	spin.Message("encoding")
 	b, err := r.Encode()
 	if err != nil {
 		return tracerr.Wrap(err)
 	}
 
+	b = pretty.PrettyOptions(b, &pretty.Options{
+		Width:    80,
+		Prefix:   "",
+		Indent:   "\t",
+		SortKeys: false,
+	})
+
+	spin.Message("creating file")
 	f, err := os.Create(path)
 	if err != nil {
 		return tracerr.Wrap(err)
 	}
+	defer f.Close()
 
-	written, err := f.Write(b)
+	spin.Message("writing")
+	_, err = f.Write(b)
 	if err != nil {
 		return tracerr.Wrap(err)
 	}
 
-	if cfg.Verbose {
-		if cfg.Color {
-			color.New(color.FgGreen, color.Bold).Printf("Wrote %d bytes\n", written)
-		} else {
-			fmt.Printf("Wrote %d bytes\n", written)
-		}
+	if err = spin.Stop(); err != nil {
+		return tracerr.Wrap(err)
 	}
-
-	f.Close()
 
 	return nil
 }
