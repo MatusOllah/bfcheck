@@ -69,43 +69,49 @@ func main() {
 	}
 
 	if cfg.WriteReport {
-		path := fmt.Sprintf("bfcheck_report_%d.json", r.Time)
-
-		if cfg.Verbose {
-			if cfg.Color {
-				color.New(color.FgCyan).Printf("Writing report to ")
-				fmt.Println(path)
-			} else {
-				fmt.Printf("Writing report to %s\n", path)
-			}
-		}
-
-		b, err := r.Encode()
-		if err != nil {
+		if err := WriteReport(r); err != nil {
 			tracerr.Print(err)
 			os.Exit(1)
 		}
-
-		f, err := os.Create(path)
-		if err != nil {
-			tracerr.Print(err)
-			os.Exit(1)
-		}
-
-		written, err := f.Write(b)
-		if err != nil {
-			tracerr.Print(err)
-			os.Exit(1)
-		}
-
-		if cfg.Verbose {
-			if cfg.Color {
-				color.New(color.FgGreen, color.Bold).Printf("Wrote %d bytes\n", written)
-			} else {
-				fmt.Printf("Wrote %d bytes\n", written)
-			}
-		}
-
-		f.Close()
 	}
+}
+
+func WriteReport(r *Report) error {
+	path := fmt.Sprintf("bfcheck_report_%d.json", r.Time)
+
+	if cfg.Verbose {
+		if cfg.Color {
+			color.New(color.FgCyan).Printf("Writing report to ")
+			fmt.Println(path)
+		} else {
+			fmt.Printf("Writing report to %s\n", path)
+		}
+	}
+
+	b, err := r.Encode()
+	if err != nil {
+		return tracerr.Wrap(err)
+	}
+
+	f, err := os.Create(path)
+	if err != nil {
+		return tracerr.Wrap(err)
+	}
+
+	written, err := f.Write(b)
+	if err != nil {
+		return tracerr.Wrap(err)
+	}
+
+	if cfg.Verbose {
+		if cfg.Color {
+			color.New(color.FgGreen, color.Bold).Printf("Wrote %d bytes\n", written)
+		} else {
+			fmt.Printf("Wrote %d bytes\n", written)
+		}
+	}
+
+	f.Close()
+
+	return nil
 }
