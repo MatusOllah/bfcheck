@@ -125,9 +125,10 @@ func checkFile(path string) ([]Instance, error) {
 				}
 
 				instances = append(instances, Instance{
-					File:   absPath,
-					Line:   ln,
-					Column: col,
+					File:        absPath,
+					Line:        ln,
+					Column:      col,
+					FoundString: pattern,
 				})
 			}
 		}
