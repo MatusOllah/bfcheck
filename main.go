@@ -13,7 +13,7 @@ import (
 	"github.com/ztrue/tracerr"
 )
 
-const version = "2.0.0"
+const version = "2.0.1"
 
 type Config struct {
 	PosArgs struct {
